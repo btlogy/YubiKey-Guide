@@ -515,10 +515,17 @@ $ sudo service rng-tools restart
 
 ## Temporary working directory
 
-Create a temporary directory which will be cleared on [reboot](https://en.wikipedia.org/wiki/Tmpfs) and set it as the GnuPG directory:
+Create a temporary directory and set it as the GnuPG directory:
 
 ```console
 $ export GNUPGHOME=$(mktemp -d -t gnupg_$(date +%Y%m%d%H%M)_XXX)
+```
+
+If it is not already the case, mount the directory explicitly as a [tmpfs](https://en.wikipedia.org/wiki/Tmpfs) which will be cleared on reboot: 
+
+```console
+$ sudo mount -o size=25M,uid=$(id -u) -t tmpfs tmpfs "${GNUPGHOME}"
+$ chmod 0700 "${GNUPGHOME}"
 ```
 
 Otherwise, to preserve the working environment, set the GnuPG directory to your home folder:
